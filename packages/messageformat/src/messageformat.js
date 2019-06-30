@@ -233,6 +233,36 @@ export default class MessageFormat {
   }
 
   /**
+   * By default compiled functions return a string. If instead your use case
+   * requires e.g. using non-string values for variables, you may want to use
+   * this option to produce arrays instead, and to handle the values'
+   * concatenation yourself. Note that SelectFormat and PluralFormat expressions
+   * will be represented using an array, which will not be flattened in the
+   * output.
+   *
+   * @memberof MessageFormat
+   * @param {boolean} [enable=true]
+   * @returns {MessageFormat} The MessageFormat instance, to allow for chaining
+   *
+   * @example
+   * const mf = new MessageFormat('en').setArrayOutput()
+   *
+   * mf.compile('simple message')()
+   *   // ['simple message']
+   *
+   * const obj = { foo: 'bar' }
+   * mf.compile('objectively, {obj} is an object')({ obj })
+   *   // ['objectively, ', obj, ' is an object']
+   *
+   * mf.compile('select {num, plural, =0{none} one{one} other{#}}')({ num: 42 })
+   *   // ['select ', [42]]
+   */
+  setArrayOutput(enable) {
+    this.arrayOutput = !!enable || typeof enable == 'undefined';
+    return this;
+  }
+
+  /**
    * Compile messages into storable functions
    *
    * If `messages` is a single string including ICU MessageFormat declarations,
