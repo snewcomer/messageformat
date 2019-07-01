@@ -15,9 +15,7 @@ module.exports = {
         loader: require.resolve('messageformat-loader'),
         options: {
           biDiSupport: false,
-          disablePluralKeyChecks: false,
-          formatters: null,
-          intlSupport: false,
+          customFormatters: null,
           locale,
           strictNumberSign: false
         }
