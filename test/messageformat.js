@@ -709,10 +709,15 @@ describe('arrayOutput', function() {
 
   it('select string', function() {
     var msg = mf.compile('msg {foo, select, FOO{bar} other{baz}}');
-    expect(msg({ foo: 'FOO' })).to.eql(['msg ', ['bar']]);
+    expect(msg({ foo: 'FOO' })).to.eql(['msg ', 'bar']);
   });
 
   it('select variable', function() {
+    var msg = mf.compile('msg {foo, select, FOO{{bar}} other{baz}}');
+    expect(msg({ foo: 'FOO', bar: 'BAR' })).to.eql(['msg ', 'BAR']);
+  });
+
+  it('select multiple', function() {
     var msg = mf.compile('msg {foo, select, FOO{{bar} end} other{baz}}');
     expect(msg({ foo: 'FOO', bar: 'BAR' })).to.eql(['msg ', ['BAR', ' end']]);
   });

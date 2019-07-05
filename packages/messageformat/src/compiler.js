@@ -37,7 +37,7 @@ export default class Compiler {
       const pc = plurals[lc] || { cardinal: [], ordinal: [] };
       pc.strict = !!this.mf.strictNumberSign;
       const r = parse(src, pc).map(token => this.token(token));
-      return `function(d) { return ${this.concatenate(r)}; }`;
+      return `function(d) { return ${this.concatenate(r, true)}; }`;
     } else {
       const result = {};
       for (var key in src) {
@@ -54,7 +54,7 @@ export default class Compiler {
     const r = token.cases.map(({ key, tokens }) => {
       if (key === 'other') needOther = false;
       const s = tokens.map(tok => this.token(tok, plural));
-      return `${propname(key)}: ${this.concatenate(s)}`;
+      return `${propname(key)}: ${this.concatenate(s, false)}`;
     });
     if (needOther)
       throw new Error("No 'other' form found in " + JSON.stringify(token));
@@ -62,8 +62,8 @@ export default class Compiler {
   }
 
   /** @private */
-  concatenate(tokens) {
-    return this.mf.arrayOutput
+  concatenate(tokens, root) {
+    return this.mf.arrayOutput && (root || tokens.length > 1)
       ? '[' + tokens.join(', ') + ']'
       : tokens.join(' + ') || '""';
   }
